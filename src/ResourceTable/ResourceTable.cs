@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 
 namespace Tuvl.Util
 {
@@ -76,7 +77,7 @@ namespace Tuvl.Util
         // searches a Type derived from ResourceTable. If one exists, an instance is
         // created as a ResourceTable and its Parent is set to the previously created
         // ResourceTable object if such an object exists.
-        // The last ResourceTable object is returned to the caller that must hold a
+        // Returns the last ResourceTable object to the caller, that must hold a
         // reference to it, in order to avoid performance penalties resulting from
         // repeated searches.
         public static ResourceTable GetTable(Type thisType, string baseName,
@@ -84,12 +85,22 @@ namespace Tuvl.Util
         {
             ResourceTable current = null;
             Dictionary<string, Type> tableTypes = new Dictionary<string, Type>();
-            foreach (Type t in thisType.Assembly.GetExportedTypes())
+            Type[] types = null;
+            try
             {
-                if (t.BaseType == typeof(ResourceTable))
+                types = thisType.Assembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException e)
+            {
+                types = e.Types;
+            }
+            foreach (Type t in types)
+            {
+                if ((t is null) || t.BaseType != typeof(ResourceTable))
                 {
-                    tableTypes.Add(string.Format("{0}.{1}", t.Namespace, t.Name), t);
+                    continue;
                 }
+                tableTypes.Add(string.Format("{0}.{1}", t.Namespace, t.Name), t);
             }
             string typeName = string.Format("{0}.{1}", thisType.Namespace, baseName);
             if (tableTypes.ContainsKey(typeName))
