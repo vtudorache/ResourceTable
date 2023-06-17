@@ -60,7 +60,7 @@ namespace Tuvl.Util
             }
         }
 
-        // The name passed to GetTable(...) for this resource table.
+        // The name passed to GetTable(...) when creating this resource table.
         public string BaseName { get; private set; }
 
         // Gets a ResourceTable object with the given baseName for the given culture,
