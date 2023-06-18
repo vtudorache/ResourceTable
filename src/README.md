@@ -1,6 +1,4 @@
-# Project List
-
-__ResourceTable__  
+# ResourceTable
 
 The abstract class `ResourceTable` models a resource table, a mapping where
 keys are strings and values are objects of any type. This class is useful as 
@@ -24,7 +22,7 @@ For example, given the names above and the local culture `fr-FR`, the names
 obtained are `Greeter.UI.Resources.Messages_fr` and 
 `Greeter.UI.Resources.Messages_fr_FR`. For each of these names, the method
 searches the assembly for a `Type` derived from `ResourceTable`. If such a
-`Type` exists, an instance is created as a `ResourceTable` and its Parent is
+`Type` exists, an instance is created as a `ResourceTable` and its `Parent` is
 set to the previously created `ResourceTable` object if one exists.
 
 The search process returns the last `ResourceTable` object to the caller. The
