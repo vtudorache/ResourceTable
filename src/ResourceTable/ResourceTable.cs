@@ -132,8 +132,8 @@ namespace Tuvl.Util
             return current;
         }
 
-        // Gets a ResourceTable object for the given baseName and the current
-        // culture.
+        // Gets a ResourceTable object for the given baseName and the current culture
+        // or null if no such object exists.
         public static ResourceTable GetTable(Type thisType, string baseName)
         {
             return GetTable(thisType, baseName, CultureInfo.CurrentCulture);
