@@ -5,9 +5,11 @@ __ResourceTable__
 The abstract class `ResourceTable` models a resource table, a mapping where keys
 are strings and values are objects of any type. This class is useful as a base
 class for classes defining locale-specific resources, isolating data objects
-from program code.
+from program code. Its static methods search the current assembly for classes
+derived from `ResourceTable` and load the ones appropriated for the given or
+the current locale.
 
-The resource table is loaded by its owner when needed. The owner should keep a
+A resource table is loaded by its owner when needed. The owner should keep a
 reference to the table, in order to avoid performance penalties resulting from
 repeated calls of `GetTable(...)` when searching for resources.
 
@@ -25,6 +27,6 @@ searches the assembly for a `Type` derived from `ResourceTable`. If such a
 `Type` exists, an instance is created as a `ResourceTable` and its Parent is
 set to the previously created `ResourceTable` object if one exists.
 
-The method returns the last `ResourceTable` object to the caller. The caller
-must keep a reference to it, in order to avoid performance penalties
+The search process returns the last `ResourceTable` object to the caller. The
+caller must keep a reference to it, in order to avoid performance penalties
 resulting from repeated searches.
