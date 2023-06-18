@@ -7,11 +7,12 @@ namespace Tuvl.Util
 {
     // The abstract class ResourceTable models a resource table, a mapping where
     // keys are strings and values are objects of any type.
-    // This class is useful as a base for classes defining locale-specific resources,
-    // isolating data objects from program code.
-    // The resource table is loaded by its owner when needed. The owner should hold
+    // This class is useful as a base class for classes defining locale-specific
+    // resources, isolating data objects from program code.
+    //
+    // The resource table is loaded by its owner when needed. The owner should keep
     // a reference to the table, in order to avoid performance penalties resulting
-    // from calls of GetTable(...) when searching for resources.
+    // from repeated calls of GetTable(...) when searching for resources.
     public abstract class ResourceTable
     {
         // The culture of this resource table.
@@ -63,23 +64,29 @@ namespace Tuvl.Util
         // The name passed to GetTable(...) when creating this resource table.
         public string BaseName { get; private set; }
 
-        // Gets a ResourceTable object with the given baseName for the given culture,
+        // Gets a ResourceTable object for the given baseName and the given culture,
         // thisType being the Type of the object where GetTable(...) is called from
-        // (obtained with this.GetType()). The given baseName is the name of a Type
-        // derived from ResourceTable, including its namespace.
+        // (as obtained with this.GetType()). The given baseName must be the name of
+        // a Type derived from ResourceTable, including its namespace.
+        //
         // The search starts in the namespace of thisType. For example, given the
-        // baseName NS.MyTab, calling GetTable(...) from an object having a namespace
-        // A.Test, the method searches for a Type (derived from ResourceTable) having
-        // the name A.Test.NS.MyTab. If such Type exists, an instance is created as a
-        // ResourceTable. Then, the culture's name (obtained with culture.Name) is
-        // split by '-' and for each part a new baseName is obtained by appending '_'
-        // and the part to the previous baseName. For each baseName, the method
-        // searches a Type derived from ResourceTable. If one exists, an instance is
-        // created as a ResourceTable and its Parent is set to the previously created
-        // ResourceTable object if such an object exists.
-        // Returns the last ResourceTable object to the caller, that must hold a
-        // reference to it, in order to avoid performance penalties resulting from
-        // repeated searches.
+        // baseName Resources.Messages, calling GetTable(...) from a method of an
+        // object of the namespace Greeter.UI, the method searches for a Type
+        // with the name Greeter.UI.Resources.Messages. If such Type exists, an
+        // instance is created as a ResourceTable.
+        // Then, the culture's name (obtained with culture.Name) is split by '-' then
+        // for each part a new baseName is obtained by appending '_' and the part to
+        // the previous baseName. For example, having the names above and the local
+        // culture fr-FR, the names obtained are Greeter.UI.Resources.Messages_fr and
+        // Greeter.UI.Resources.Messages_fr_FR.
+        // For each of the names above, the method searches the assembly for a Type
+        // derived from ResourceTable. If such a Type exists, an instance is created
+        // as a ResourceTable and its Parent is set to the previously created
+        // ResourceTable object if one exists.
+        //
+        // The method returns the last ResourceTable object to the caller. The caller
+        // must keep a reference to it, in order to avoid performance penalties
+        // resulting from repeated searches.
         public static ResourceTable GetTable(Type thisType, string baseName,
             CultureInfo culture)
         {
